@@ -1,7 +1,7 @@
 resource "aws_subnet" "purely_public_subnet_1a" {
 	vpc_id     = aws_vpc.purely_vpc.id
 	cidr_block = "10.0.2.0/23"
-	availability_zone = "us-east-1a"
+	availability_zone = "ap-south-1a"
 	map_public_ip_on_launch = true
 
 	tags = {
@@ -17,7 +17,7 @@ resource "aws_subnet" "purely_public_subnet_1a" {
 resource "aws_subnet" "purely_public_subnet_1b" {
 	vpc_id     = aws_vpc.purely_vpc.id
 	cidr_block = "10.0.4.0/23"
-	availability_zone = "us-east-1b"
+	availability_zone = "ap-south-1b"
 	map_public_ip_on_launch = true
 
 	tags = {
@@ -33,7 +33,7 @@ resource "aws_subnet" "purely_public_subnet_1b" {
 resource "aws_subnet" "purely_private_subnet_1a" {
 	vpc_id     = aws_vpc.purely_vpc.id
 	cidr_block = "10.0.6.0/23"
-	availability_zone = "us-east-1a"
+	availability_zone = "ap-south-1a"
 
 	tags = {
 		Name = "purely_private_subnet_1a",
@@ -48,7 +48,7 @@ resource "aws_subnet" "purely_private_subnet_1a" {
 resource "aws_subnet" "purely_private_subnet_1b" {
 	vpc_id     = aws_vpc.purely_vpc.id
 	cidr_block = "10.0.8.0/23"
-	availability_zone = "us-east-1b"
+	availability_zone = "ap-south-1b"
 
 	tags = {
 		Name = "purely_private_subnet_1b",
