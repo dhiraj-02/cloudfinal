@@ -1,0 +1,54 @@
+@import url('https://fonts.googleapis.com/css2?family=Agbalumo&family=Poppins:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Arvo:ital,wght@0,400;0,700;1,400;1,700&family=Lexend:wght@100..900&display=swap');
+*{
+  font-family: poppins, Inter, system-ui, Avenir, Helvetica, Arial, sans-serif;
+  font-family: "Lexend", sans-serif;
+  font-weight: 400;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  list-style-type: none;
+  text-decoration: none;
+}
+:root {
+  --body: #EFF0F3;
+  --primary: #056046;
+  --secondary: #f1a0a0;
+  --ternary: #eccb9a;
+  --light: #ABD1C6;
+  --black: rgb(0, 0, 0);
+}
+::selection {
+  background-color: var(--primary);
+  color: var(--light);
+}
+main {
+  width: 100%;
+  height: 100vh;
+}
+body{
+  background-color: var(--body);
+}
+.flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+}
+button {
+  background-color: transparent;
+  font-size: 16px;
+  border: 2px solid var(--primary);
+  border-radius: 3px;
+  cursor: pointer;
+  margin-top: 10px;
+  padding: 10px;
+  transition: 0.3s;
+  color: var(--primary);
+}
+button:hover{
+  background-color: var(--primary);color: var(--body);
+}
+button:active{
+  scale: 0.98;
+}
