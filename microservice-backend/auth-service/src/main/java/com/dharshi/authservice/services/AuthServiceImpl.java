@@ -172,13 +172,15 @@ public class AuthServiceImpl implements AuthService {
                 );
 
                 webClient.post()
-                        .uri("https://pkc-l7pr2.ap-south-1.aws.confluent.cloud:443/kafka/v3/clusters/lkc-886jjq/topics/user/records")
-                        .header("Content-Type", "application/json")
-                        .header("Authorization", "Basic UjVKNTRDUE5YUjVMQlVQUzpjZmx0V3I3TTVQQ05oN2xXT3ZmTHZaeDdSRjY4TzhJMW1EdUtzbWRNVkIrZDh1SUMvTUZYeXl5QTR4QWtJc0ZR")
-                        .bodyValue(body)
-                        .retrieve()
-                        .bodyToMono(String.class)
-                        .block();
+                    .uri("https://pkc-l7pr2.ap-south-1.aws.confluent.cloud:443/kafka/v3/clusters/lkc-886jjq/topics/user/records")
+                    .header("Content-Type", "application/json")
+                    .header("Authorization", "Basic UjVKNTRDUE5YUjVMQlVQUzpjZmx0V3I3TTVQQ05oN2xXT3ZmTHZaeDdSRjY4TzhJMW1EdUtzbWRNVkIrZDh1SUMvTUZYeXl5QTR4QWtJc0ZR")
+                    .bodyValue(body)
+                    .retrieve()
+                    .bodyToMono(String.class)
+                    .doOnSuccess(res -> System.out.println("Kafka REST success: " + res))
+                    .doOnError(err -> System.err.println("Kafka REST error: " + err.getMessage()))
+                    .block();
 
                 List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
                 UserAuthorityDto userAuthorityDto = UserAuthorityDto.builder()
