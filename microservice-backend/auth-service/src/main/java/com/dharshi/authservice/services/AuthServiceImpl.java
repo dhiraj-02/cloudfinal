@@ -164,23 +164,22 @@ public class AuthServiceImpl implements AuthService {
                 String email = jwtUtils.getUserNameFromJwtToken(token);
 
                 Map<String, Object> body = Map.of(
-                        "key", email,
                         "value", Map.of(
                                 "type", "JSON",
-                                "data", "User validated"
+                                "data", email   // <-- only this changes
                         )
                 );
 
                 webClient.post()
-                    .uri("https://pkc-l7pr2.ap-south-1.aws.confluent.cloud:443/kafka/v3/clusters/lkc-886jjq/topics/user/records")
-                    .header("Content-Type", "application/json")
-                    .header("Authorization", "Basic UjVKNTRDUE5YUjVMQlVQUzpjZmx0V3I3TTVQQ05oN2xXT3ZmTHZaeDdSRjY4TzhJMW1EdUtzbWRNVkIrZDh1SUMvTUZYeXl5QTR4QWtJc0ZR")
-                    .bodyValue(body)
-                    .retrieve()
-                    .bodyToMono(String.class)
-                    .doOnSuccess(res -> System.out.println("Kafka REST success: " + res))
-                    .doOnError(err -> System.err.println("Kafka REST error: " + err.getMessage()))
-                    .block();
+                        .uri("https://pkc-l7pr2.ap-south-1.aws.confluent.cloud:443/kafka/v3/clusters/lkc-886jjq/topics/user/records")
+                        .header("Content-Type", "application/json")
+                        .header("Authorization", "Basic UjVKNTRDUE5YUjVMQlVQUzpjZmx0V3I3TTVQQ05oN2xXT3ZmTHZaeDdSRjY4TzhJMW1EdUtzbWRNVkIrZDh1SUMvTUZYeXl5QTR4QWtJc0ZR")
+                        .bodyValue(body)
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .doOnSuccess(res -> System.out.println("Kafka REST success: " + res))
+                        .doOnError(err -> System.err.println("Kafka REST error: " + err.getMessage()))
+                        .block();
 
                 List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
                 UserAuthorityDto userAuthorityDto = UserAuthorityDto.builder()
