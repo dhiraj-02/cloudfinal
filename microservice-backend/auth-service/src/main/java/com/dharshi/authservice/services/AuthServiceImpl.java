@@ -9,6 +9,7 @@ import com.dharshi.authservice.modals.User;
 import com.dharshi.authservice.repositories.UserRepository;
 import com.dharshi.authservice.security.UserDetailsImpl;
 import com.dharshi.authservice.security.jwt.JwtUtils;
+import com.dharshi.authservice.factories.WebClientConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -22,12 +23,10 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
+import org.springframework.web.reactive.function.client.WebClient;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.*;
 
 @Component
 @Slf4j
@@ -56,6 +55,9 @@ public class AuthServiceImpl implements AuthService {
 
     @Autowired
     private UserDetailsService userDetailsService;
+    
+    @Autowired
+    private WebClient webClient;
 
     @Override
     public ResponseEntity<ApiResponseDto<?>> registerUser(SignUpRequestDto signUpRequestDto)
@@ -158,6 +160,26 @@ public class AuthServiceImpl implements AuthService {
             if (jwtUtils.validateJwtToken(token)) {
                 String username = jwtUtils.getUserNameFromJwtToken(token);
                 UserDetailsImpl userDetails = (UserDetailsImpl) userDetailsService.loadUserByUsername(username);
+
+                String email = jwtUtils.getUserNameFromJwtToken(token);
+
+                Map<String, Object> body = Map.of(
+                        "key", email,
+                        "value", Map.of(
+                                "type", "JSON",
+                                "data", "User validated"
+                        )
+                );
+
+                webClient.post()
+                        .uri("https://pkc-l7pr2.ap-south-1.aws.confluent.cloud:443/kafka/v3/clusters/lkc-886jjq/topics/user/records")
+                        .header("Content-Type", "application/json")
+                        .header("Authorization", "Basic UjVKNTRDUE5YUjVMQlVQUzpjZmx0V3I3TTVQQ05oN2xXT3ZmTHZaeDdSRjY4TzhJMW1EdUtzbWRNVkIrZDh1SUMvTUZYeXl5QTR4QWtJc0ZR")
+                        .bodyValue(body)
+                        .retrieve()
+                        .bodyToMono(String.class)
+                        .block();
+
                 List<String> roles = userDetails.getAuthorities().stream().map(GrantedAuthority::getAuthority).toList();
                 UserAuthorityDto userAuthorityDto = UserAuthorityDto.builder()
                         .userId(userDetails.getId())
