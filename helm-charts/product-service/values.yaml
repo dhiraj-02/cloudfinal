@@ -4,14 +4,13 @@ product:
   containerPort: 9010
   image: default
   requests:
-    cpu: 250m
+    cpu: 100m
     memory: 256Mi
   limits:
-    cpu: 500m
+    cpu: 250m
     memory: 512Mi
-  averageUtilization:
-   cpu: 60
-   memory: 60
+  averageValue:
+    cpu: 120m
   service:
     type: ClusterIP
     port: 9010

@@ -2,23 +2,35 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ printf "%s-hpa" .Values.product.label }}
+  annotations:
+    autoscaling.k8s.io/behavior: |
+      {
+        "scaleDown": {
+          "stabilizationWindowSeconds": 30,
+          "policies": [
+            {"type": "Pods", "value": 4, "periodSeconds": 30},
+            {"type": "Percent", "value": 100, "periodSeconds": 30}
+          ]
+        },
+        "scaleUp": {
+          "stabilizationWindowSeconds": 0,
+          "policies": [
+            {"type": "Pods", "value": 4, "periodSeconds": 15},
+            {"type": "Percent", "value": 100, "periodSeconds": 15}
+          ]
+        }
+      }
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
     kind: Deployment
-    name: {{ printf "%s-depl" .Values.product.label }}  
+    name: {{ printf "%s-depl" .Values.product.label }}
   minReplicas: 1
-  maxReplicas: 2
+  maxReplicas: 5
   metrics:
   - type: Resource
     resource:
       name: cpu
       target:
-        type: Utilization
-        averageUtilization: {{ .Values.product.averageUtilization.cpu }}
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: Utilization
-        averageUtilization: {{ .Values.product.averageUtilization.memory }}
+        type: AverageValue
+        averageValue: {{ .Values.product.averageValue.cpu | quote }}
