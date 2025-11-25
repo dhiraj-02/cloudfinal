@@ -7,11 +7,10 @@ cart:
     cpu: 50m
     memory: 128Mi
   limits:
-    cpu: 150m
+    cpu: 200m
     memory: 256Mi
   averageValue:
-    cpu: 80m       # scale when avg CPU per pod > 80m
-    memory: 180Mi  # scale when avg memory per pod > 180Mi
+    cpu: 100m  # scale when avg CPU per pod > 100m
   service:
     type: ClusterIP
     port: 9060

@@ -16,9 +16,3 @@ spec:
       target:
         type: AverageValue
         averageValue: {{ .Values.cart.averageValue.cpu | quote }}
-  - type: Resource
-    resource:
-      name: memory
-      target:
-        type: AverageValue
-        averageValue: {{ .Values.cart.averageValue.memory | quote }}
