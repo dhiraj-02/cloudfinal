@@ -8,7 +8,7 @@ spec:
     kind: Deployment
     name: {{ printf "%s-depl" .Values.cart.label }}  
   minReplicas: 1
-  maxReplicas: 2
+  maxReplicas: 5
   metrics:
   - type: Resource
     resource:

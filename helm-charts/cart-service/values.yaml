@@ -10,8 +10,8 @@ cart:
     cpu: 500m
     memory: 512Mi
   averageUtilization:
-   cpu: 60
-   memory: 60
+   cpu: 20
+   memory: 20
   service:
     type: ClusterIP
     port: 9060
