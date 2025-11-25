@@ -2,6 +2,24 @@ apiVersion: autoscaling/v2
 kind: HorizontalPodAutoscaler
 metadata:
   name: {{ printf "%s-hpa" .Values.cart.label }}
+  annotations:
+    autoscaling.k8s.io/behavior: |
+      {
+        "scaleDown": {
+          "stabilizationWindowSeconds": 30,
+          "policies": [
+            {"type": "Pods", "value": 4, "periodSeconds": 30},
+            {"type": "Percent", "value": 100, "periodSeconds": 30}
+          ]
+        },
+        "scaleUp": {
+          "stabilizationWindowSeconds": 0,
+          "policies": [
+            {"type": "Pods", "value": 4, "periodSeconds": 15},
+            {"type": "Percent", "value": 100, "periodSeconds": 15}
+          ]
+        }
+      }
 spec:
   scaleTargetRef:
     apiVersion: apps/v1
