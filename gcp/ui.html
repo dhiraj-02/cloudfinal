@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Active Users (Kafka Window)</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f5f7fa;
+        margin: 0;
+        padding: 20px;
+    }
+
+    .container {
+        max-width: 600px;
+        margin: auto;
+        background: white;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+        text-align: center;
+    }
+
+    .count-box {
+        text-align: center;
+        padding: 10px;
+        background: #0078ff;
+        color: white;
+        font-size: 24px;
+        border-radius: 10px;
+        margin-bottom: 10px;
+    }
+
+    #next-refresh {
+        text-align: center;
+        margin-bottom: 20px;
+        color: #555;
+        font-size: 18px;
+    }
+
+    .email-list {
+        padding: 0;
+        list-style: none;
+    }
+
+    .email-list li {
+        background: #eef3ff;
+        margin: 6px 0;
+        padding: 8px;
+        border-radius: 6px;
+        font-size: 16px;
+    }
+
+    .refresh-btn {
+        width: 100%;
+        padding: 10px;
+        background: #28a745;
+        border: none;
+        color: white;
+        cursor: pointer;
+        font-size: 18px;
+        border-radius: 8px;
+        margin-top: 15px;
+    }
+</style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Active Users (Last 60s Window)</h2>
+
+    <div class="count-box" id="count">Loading...</div>
+
+    <div id="next-refresh">Next Refresh In: 60s</div>
+
+    <ul class="email-list" id="emails">
+        <li>Loading...</li>
+    </ul>
+
+    <button class="refresh-btn" onclick="loadData()">Refresh</button>
+</div>
+
+<script>
+let countdown = 60;
+let countdownInterval;
+let autoRefreshInterval;
+
+// Start countdown timer
+function startCountdown() {
+    clearInterval(countdownInterval);
+    countdown = 60;
+
+    countdownInterval = setInterval(() => {
+        countdown--;
+        document.getElementById("next-refresh").innerText =
+            "Next Refresh In: " + countdown + "s";
+
+        if (countdown <= 0) {
+            loadData(); // Auto-refresh
+        }
+    }, 1000);
+}
+
+// Load data from API
+async function loadData() {
+    try {
+        const res = await fetch("http://localhost:8080/active-users");
+        const data = await res.json();
+
+        // Update count
+        document.getElementById("count").innerText = data.count + " Active Users";
+
+        // Update emails
+        const emailsUl = document.getElementById("emails");
+        emailsUl.innerHTML = "";
+
+        if (data.unique_emails.length === 0) {
+            emailsUl.innerHTML = "<li>No active users</li>";
+        } else {
+            data.unique_emails.forEach(email => {
+                const li = document.createElement("li");
+                li.innerText = email;
+                emailsUl.appendChild(li);
+            });
+        }
+
+    } catch (err) {
+        console.error("API error:", err);
+    }
+
+    // Reset countdown
+    startCountdown();
+}
+
+// Auto refresh every 60 seconds
+function startAutoRefresh() {
+    clearInterval(autoRefreshInterval);
+    autoRefreshInterval = setInterval(loadData, 60000);
+}
+
+// On page load
+window.onload = () => {
+    loadData();
+    startCountdown();
+    startAutoRefresh();
+};
+</script>
+
+</body>
+</html>
